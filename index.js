@@ -1,8 +1,9 @@
 const listener = require('./listener');
-//const { findHorizontalThree, findVerticalThree, findDecendingDiagonal, findAscendingDiagonal } = require('detector');
+const { detectVertical } = require('./detector');
 //const { receiveMove, sendMove } = require('brain');
 
 let board;
+let nextMove;
 
 const start = () => {
     const server = listener.listen()
@@ -11,13 +12,28 @@ const start = () => {
         console.log('New Connection')
         socket.on('data',(data)=>{
             const message = data.toString()
-            console.log(data.toString())
-            if(message==='&HELLO=0;'){
-                socket.write('&HELLO=0;')
+            console.log(data.toString());
+            if (message.includes('&VALID=1;')) {
+                updateBoard(nextMove, 1);
             }
-            if((message === ('&HELLO=1;')) || message.includes('MOVE')){
-                console.log('sending &MOVE=1;')
-                socket.write('&MOVE=1;')
+            if(message === '&HELLO=0'){
+                socket.write('&HELLO=0');
+                return
+            }
+            if(message === ('&HELLO=1;')){
+                let playerMove = 1;
+                console.log(`sending &MOVE=${playerMove};`);
+                nextMove = playerMove; // Needs updating to actual move
+                console.log(detectVertical(board));
+                socket.write(`&MOVE=${playerMove};`);
+            }
+            if( message.includes('MOVE')){
+                let column = message.match(/&MOVE=(\d);/)[1];
+                updateBoard(column, 2);
+                let playerMove = 1;
+                console.log(`sending &MOVE=${playerMove};`);
+                nextMove = playerMove; // Needs updating to actual move
+                socket.write(`&MOVE=${playerMove};`);
             };
         })
         socket.on('end',()=>{
@@ -29,9 +45,15 @@ const start = () => {
 start()
 
 function initialiseBoard() {
-    return new Array(6).fill(new Array(7).fill(0));
+    let newBoard = new Array(7);
+    for (let i = 0; i < newBoard.length; i++) {
+        newBoard[i] = new Array(6).fill(0);
+    }
+    return newBoard;
 }
 
-function updateBoard() {
-    
+function updateBoard(column, player) {
+    let index = board[column].indexOf(0);
+    board[column][index] = player;
+    console.log(board)
 }
