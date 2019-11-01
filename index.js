@@ -25,9 +25,14 @@ const start = () => {
 start()
 
 function initialiseBoard() {
-    return new Array(6).fill(new Array(7).fill(0));
+    let newBoard = new Array(7);
+    for (let i = 0; i < newBoard.length; i++) {
+        newBoard[i] = new Array(6).fill(0);
+    }
+    return newBoard;
 }
 
-function updateBoard() {
-    
+function updateBoard(column, player) {
+    let index = board[column].indexOf(0);
+    board[column][index] = player;
 }
