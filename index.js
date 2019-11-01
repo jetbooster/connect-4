@@ -3,6 +3,7 @@ const listener = require('./listener');
 //const { receiveMove, sendMove } = require('brain');
 
 let board;
+let nextMove;
 
 const start = () => {
     const server = listener.listen()
@@ -11,10 +12,17 @@ const start = () => {
         console.log('New Connection')
         socket.on('data',(data)=>{
             const message = data.toString()
-            console.log(data.toString())
+            console.log(data.toString());
+            if (message.includes('&VALID=1;')) {
+                updateBoard(nextMove, 1);
+            }
             if((message === ('&HELLO=1;')) || message.includes('MOVE')){
-                console.log('sending &MOVE=1;')
-                socket.write('&MOVE=1;')
+                let column = message.match(/&MOVE=(\d);/)[1];
+                updateBoard(column, 2);
+                let playerMove = 1;
+                console.log(`sending &MOVE=${playerMove};`);
+                nextMove = playerMove; // Needs updating to actual move
+                socket.write(`&MOVE=${playerMove};`);
             };
         })
         socket.on('end',()=>{
