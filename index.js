@@ -12,6 +12,9 @@ const start = () => {
         socket.on('data',(data)=>{
             const message = data.toString()
             console.log(data.toString())
+            if(message==='&HELLO=0;'){
+                socket.write('&HELLO=0;')
+            }
             if((message === ('&HELLO=1;')) || message.includes('MOVE')){
                 console.log('sending &MOVE=1;')
                 socket.write('&MOVE=1;')
