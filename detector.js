@@ -1,3 +1,24 @@
+const check3 = (array)=> {
+    let moveAt = [];
+    moveToLeft =  array.some(function (a, i, aa) {
+        runOfThree = (i > 1 && a === aa[i - 2] && a === aa[i - 1] && aa[i-3] === 0);
+        if(runOfThree){
+            moveAt.push(i-3)
+            return true 
+        }
+        return false;
+    });
+    moveToRight = array.some(function (a, i, aa) {
+        runOfThree =  i > 1 && a === aa[i - 2] && a === aa[i - 1] && aa[i+1] === 0;
+        if(runOfThree){
+            moveAt.push(i+1)
+            return true 
+        }
+        return false;
+    });
+    return moveAt;
+}
+
 const detectDiagonal = (board) => {
     const numColumns = 7;
     let move = -1;
@@ -30,39 +51,53 @@ const detectDiagonal = (board) => {
 }
 
 const detectHorizontal = (board) => {
-    const x = board.map((col, i) => board.map(row => row[i]));
-    return x.slice(0,6)
+    move = -1;
+    const transposed = board.map((col, i) => board.map(row => row[i])).slice(0,6);
+    transposed.forEach((row, index)=>{
+        columnsToTry = check3(row);
+        if (!columnsToTry.length === 0){
+            columnsToTry.forEach((col)=>{
+                if (board[columnToTry].indexOf(0)===index){
+                    // First 0 found is the same as the height of this row, so this move is valid
+                    move = col;
+                }
+            })
+        }
+    })
+    return move;
 }
 
 const detectVertical = (board) => {
     // for each row, check for 3 of the same number in a row, followed by an empty space
-    let move;
-    let result;
+    let bestResult;
     board.forEach((column, index)=>{
-        result = check(column,index, move)
+        const result = check(column,index)
+        if (bestResult && !bestResult.colour === 'us'){
+            if (result.colour === 'us'){
+                bestResult = result
+            }
+        } else if(result) {
+            bestResult = result;
+        }
     });
-    if (move){
-        return move.column;
+    if (bestResult){
+        return bestResult.column;
     }
     return -1
 }
 
-const check = (col,index, move) =>{
+const check = (col,index) =>{
+    let move;
     let num = 0;
     let colour = undefined;
     let prevSpace = undefined;
     col.forEach((space)=>{
 
         if(num === 3 && space === 0){
+            console.log('three in a row detected')
             // chain of 3 detected and a blank space
             colour = prevSpace === 1 ? 'us' : 'them'
-            if(move && move.colour === 'them' && colour === 'us' ){
-                // this move is better as it ends the game for us
-                // rather than just blocking them
-                move = { player: colour, column:index }
-            } else {
-                move = { player: colour, column:index }
-            }
+            move = { player: colour, column:index }
             return;
         }
         if (space === 0){
@@ -74,7 +109,6 @@ const check = (col,index, move) =>{
             num +=1;
         } else {
             // colours did not match, this is a new chain
-
             num = 1;
         }
         prevSpace = space;

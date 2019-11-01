@@ -7,35 +7,34 @@ let nextMove;
 
 const start = () => {
     const server = listener.listen()
-    board = initialiseBoard();
     server.on('connection',(socket)=>{
+        board = initialiseBoard();
         console.log('New Connection')
         socket.on('data',(data)=>{
             const message = data.toString()
             console.log(data.toString());
-            if (message.includes('&VALID=1;')) {
+            if (message.includes('&valid=1;')) {
                 updateBoard(nextMove, 1);
-                console.log(board)
             }
-            if(message.includes('END')){
+            if(message.includes('end')){
                 return;
             }
-            if(message === '&HELLO=0;'){
-                socket.write('&HELLO=0;');
+            if(message === '&hello=0;'){
+                socket.write('&hello=0;');
             }
-            if(message === ('&HELLO=1;')){
+            if(message === ('&hello=1;')){
                 let playerMove = 1;
-                console.log(`sending &MOVE=${playerMove};`);
+                console.log(`sending &move=${playerMove};`);
                 nextMove = playerMove; // Needs updating to actual move
-                socket.write(`&MOVE=${playerMove};`);
+                socket.write(`&move=${playerMove};`);
             }
-            if( message.includes('MOVE')){
-                let column = message.match(/&MOVE=(\d);/)[1];
+            if( message.includes('move')){
+                let column = message.match(/&move=(\d);/)[1];
                 updateBoard(column, 2);
                 let playerMove = chooseMove();
-                console.log(`sending &MOVE=${playerMove};`);
+                console.log(`sending &move=${playerMove};`);
                 nextMove = playerMove; // Needs updating to actual move
-                socket.write(`&MOVE=${playerMove};`);
+                socket.write(`&move=${playerMove};`);
             };
         })
         socket.on('end',()=>{
@@ -63,6 +62,7 @@ function updateBoard(column, player) {
 }
 
 function chooseMove() {
+    console.log(board)
     let column = detectVertical(board);
     console.log(detectHorizontal(board));
     console.log(column)
@@ -77,7 +77,7 @@ function chooseMove() {
     const columnOrder = [3, 2, 4, 1, 5, 0, 6];
     for (col of columnOrder) {
         if (board[col][5] === 0) {
-            column = i;
+            column = col;
             break;
         }
     };
