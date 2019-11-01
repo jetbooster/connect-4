@@ -51,12 +51,13 @@ function chooseMove() {
     if (column !== -1) {
         return column;
     }
-    // This will check whether a column is full. If not, it will play that column
-    for (let i = 0; i < board.length; i++) {
-        if (board[i][5] === 0) {
+    // This will check whether a column is full, starting from the middle. If not, it will play that column
+    const columnOrder = [3, 2, 4, 1, 5, 0, 6];
+    for (col of columnOrder) {
+        if (board[col][5] === 0) {
             column = i;
             break;
         }
-    }
+    };
     return column;
 }
