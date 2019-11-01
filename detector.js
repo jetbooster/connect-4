@@ -1,5 +1,6 @@
-const detectHorizontal = (board, ) => {
-
+const detectHorizontal = (board) => {
+    const x = board.map((col, i) => board.map(row => row[i]));
+    return x.slice(0,6)
 }
 
 const detectVertical = (board) => {
@@ -7,7 +8,6 @@ const detectVertical = (board) => {
     let move;
     let result;
     board.forEach((column, index)=>{
-        console.log({column,index})
         result = check(column,index, move)
     });
     if (move){
@@ -54,4 +54,5 @@ const check = (col,index, move) =>{
 
 module.exports = {
     detectVertical,
+    detectHorizontal
 }
