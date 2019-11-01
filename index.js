@@ -7,8 +7,8 @@ let nextMove;
 
 const start = () => {
     const server = listener.listen()
-    board = initialiseBoard();
     server.on('connection',(socket)=>{
+        board = initialiseBoard();
         console.log('New Connection')
         socket.on('data',(data)=>{
             const message = data.toString()
@@ -73,7 +73,7 @@ function chooseMove() {
     const columnOrder = [3, 2, 4, 1, 5, 0, 6];
     for (col of columnOrder) {
         if (board[col][5] === 0) {
-            column = i;
+            column = col;
             break;
         }
     };
