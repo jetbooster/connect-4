@@ -1,3 +1,34 @@
+const detectDiagonal = (board) => {
+    const numColumns = 7;
+    let move = -1;
+    for (let column = 0; column < numColumns; column++) {
+        let row = board[column].indexOf(0);
+        if (checkLowerLeft(column, row, 1)) {
+            move = column;
+        } else if (checkLowerLeft(column, row, 2)) {
+            move = column;
+        }
+    }
+    return move;
+
+    function checkLowerLeft(column, row, colour, count = 0) {
+        let newColumn = column - 1;
+        let newRow = row - 1;
+        if (newColumn >= 0 && newRow >= 0) {
+            if (board[newColumn][newRow] === colour) {
+                if (count === 2) {
+                    return colour;
+                } else {
+                    return checkLowerLeft(newColumn, newRow, colour, count + 1);
+                }
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+}
+
 const detectHorizontal = (board) => {
     const x = board.map((col, i) => board.map(row => row[i]));
     return x.slice(0,6)
@@ -54,5 +85,6 @@ const check = (col,index, move) =>{
 
 module.exports = {
     detectVertical,
-    detectHorizontal
+    detectHorizontal,
+    detectDiagonal
 }

@@ -1,5 +1,5 @@
 const listener = require('./listener');
-const { detectVertical, detectHorizontal } = require('./detector');
+const { detectVertical, detectHorizontal, detectDiagonal } = require('./detector');
 //const { receiveMove, sendMove } = require('brain');
 
 let board;
@@ -66,6 +66,10 @@ function chooseMove() {
     let column = detectVertical(board);
     console.log(detectHorizontal(board));
     console.log(column)
+    if (column !== -1) {
+        return column;
+    }
+    column = detectDiagonal(board);
     if (column !== -1) {
         return column;
     }
