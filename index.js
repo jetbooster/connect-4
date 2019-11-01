@@ -19,7 +19,7 @@ const start = () => {
             if((message === ('&HELLO=1;')) || message.includes('MOVE')){
                 let column = message.match(/&MOVE=(\d);/)[1];
                 updateBoard(column, 2);
-                let playerMove = 1;
+                let playerMove = chooseMove();
                 console.log(`sending &MOVE=${playerMove};`);
                 nextMove = playerMove; // Needs updating to actual move
                 socket.write(`&MOVE=${playerMove};`);
@@ -44,4 +44,19 @@ function initialiseBoard() {
 function updateBoard(column, player) {
     let index = board[column].indexOf(0);
     board[column][index] = player;
+}
+
+function chooseMove() {
+    let column = detectVertical();
+    if (column !== -1) {
+        return column;
+    }
+    // This will check whether a column is full. If not, it will play that column
+    for (let i = 0; i < board.length; i++) {
+        if (board[i][5] === 0) {
+            column = i;
+            break;
+        }
+    }
+    return column;
 }
