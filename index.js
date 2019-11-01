@@ -16,21 +16,20 @@ const start = () => {
             if (message.includes('&VALID=1;')) {
                 updateBoard(nextMove, 1);
             }
-            if(message === '&HELLO=0'){
-                socket.write('&HELLO=0');
-                return
+            if(message === '&HELLO=0;'){
+                socket.write('&HELLO=0;');
             }
             if(message === ('&HELLO=1;')){
                 let playerMove = 1;
                 console.log(`sending &MOVE=${playerMove};`);
                 nextMove = playerMove; // Needs updating to actual move
-                console.log(detectVertical(board));
                 socket.write(`&MOVE=${playerMove};`);
             }
             if( message.includes('MOVE')){
                 let column = message.match(/&MOVE=(\d);/)[1];
                 updateBoard(column, 2);
                 let playerMove = 1;
+                console.log(detectVertical(board));
                 console.log(`sending &MOVE=${playerMove};`);
                 nextMove = playerMove; // Needs updating to actual move
                 socket.write(`&MOVE=${playerMove};`);
