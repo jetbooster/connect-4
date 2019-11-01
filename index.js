@@ -22,8 +22,12 @@ const start = () => {
     board = initialiseBoard();
 }
 
+start()
+
 function initialiseBoard() {
     return new Array(6).fill(new Array(7).fill(0));
 }
 
-start()
+function updateBoard() {
+    
+}
