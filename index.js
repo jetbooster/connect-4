@@ -6,11 +6,13 @@ let board;
 
 const start = () => {
     const server = listener.listen()
+    board = initialiseBoard();
     server.on('connection',(socket)=>{
+        console.log('New Connection')
         socket.on('data',(data)=>{
             const message = data.toString()
             console.log(data.toString())
-            if(!message.includes('HELLO=0') || !message.includes('END') || message.includes('VALID')){
+            if((message === ('&HELLO=1;')) || message.includes('MOVE')){
                 console.log('sending &MOVE=1;')
                 socket.write('&MOVE=1;')
             };
@@ -19,7 +21,6 @@ const start = () => {
             console.log('disconnected')
         })
     });
-    board = initialiseBoard();
 }
 
 start()
